@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-course",
+  "version": "1.0.0",
+  "description": "NodeJS Global Mentoring Program Hometasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gldstn/nodejs-course.git"
+  },
+  "author": "@gldstn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gldstn/nodejs-course/issues"
+  },
+  "homepage": "https://github.com/gldstn/nodejs-course#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
