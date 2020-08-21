@@ -6,10 +6,8 @@
   "scripts": {
     "task-1.1": "nodemon module-1/task-1",
     "task-1.2": "nodemon module-1/task-2",
-    "build-task-1.1": "babel module-1/task-3/task-1 -d module-1/task-3/task-1/dist",
-    "babel-task-1.1": "npm run build-task-1.1 && nodemon module-1/task-3/task-1/dist",
-    "build-task-1.2": "babel module-1/task-3/task-2 -d module-1/task-3/task-2/dist",
-    "babel-task-1.2": "npm run build-task-1.2 && nodemon module-1/task-3/task-2/dist"
+    "babel-task-1.1": "nodemon --exec babel-node module-1/task-3/task-1",
+    "babel-task-1.2": "nodemon --exec babel-node module-1/task-3/task-2"
   },
   "repository": {
     "type": "git",
@@ -24,6 +22,7 @@
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
     "nodemon": "^2.0.4"
   },
