@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { MIN_LENGTH, MAX_LENGTH, MIN_AGE, MAX_AGE, MIN_LIMIT } from './consts';
+import { MIN_LENGTH, MAX_LENGTH, MIN_AGE, MAX_AGE, MIN_LIMIT } from '../consts';
 
 const schema = {
   user: Joi.object({
@@ -8,7 +8,7 @@ const schema = {
     age: Joi.number().integer().min(MIN_AGE).max(MAX_AGE).required(),
   }),
   userId: Joi.object({
-    id: Joi.string().guid({ version: 'uuidv4' }),
+    id: Joi.number().integer(),
   }),
   usersAutoSuggest: Joi.object({
     login: Joi.required(),

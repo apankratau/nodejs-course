@@ -69,8 +69,9 @@
 
     /* Advanced Options */
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
-    "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
+    "resolveJsonModule": true,
   },
   "include": ["module-2/**/*"],
-  "exclude": ["node_modules", "module-1/**/*", "dist"]
+  "exclude": ["node_modules", "module-1/**/*", "dist", "module-2/**/*.js"]
 }
