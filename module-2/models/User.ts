@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../data-access';
-import { MAX_LOGIN_LENGTH } from '../consts';
-import { UserAttributes, UserCreationAttributes } from '../types';
+import sequelize from '../DAL';
+import { MAX_LOGIN_LENGTH } from '../core/constants';
+import { UserAttributes, UserCreationAttributes } from '../core/types/user';
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;

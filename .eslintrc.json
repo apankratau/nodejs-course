@@ -29,7 +29,6 @@
 		"eqeqeq": "error", // equire the use of === and !==
 		"max-classes-per-file": ["error", 1], // enforce a maximum number of classes per file
 		"no-alert": "warn", // disallow the use of alert, confirm, and prompt
-		"no-console": "warn", // disallow the use of console
 		"no-else-return": ["error", { "allowElseIf": false }], // disallow else blocks after return statements in if statements
 		"no-implicit-coercion": "error", // disallow shorthand type conversions
 		"no-labels": "error", // disallow labeled statements
@@ -121,6 +120,7 @@
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
 		"@typescript-eslint/interface-name-prefix": "off",
-		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_$" }]
+		"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_$" }],
+		"@typescript-eslint/no-empty-interface": "off"
     }
 }

@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
-import { DbConfig, Envs } from '../types';
-import rawConfig from '../config/database.json';
+import { DbConfig, Envs } from '../core/types/config';
+import rawConfig from '../core/config/database.json';
 
 const env = (process.env.NODE_ENV || 'development') as Envs;
 const config = rawConfig as DbConfig;
