@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { Request, Response, NextFunction } from 'express';
-import { RequestProperty } from '../types';
+import { RequestProperty } from '../core/types/express';
 
 const validators = (schema: Joi.Schema, property: RequestProperty) => (
   req: Request,
