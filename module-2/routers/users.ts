@@ -16,7 +16,7 @@ router.get('/autosuggest', validators(UserSchema.usersAutoSuggest, 'query'), asy
 });
 
 router.get('/:id', validators(UserSchema.userId, 'params'), async (req, res) => {
-  const user = await UserService.getById(Number(req.params.id));
+  const user = await UserService.getById(req.params.id);
   user ? res.send(user) : res.status(404).send({ message: 'User not found!' });
 });
 
@@ -25,12 +25,12 @@ router.post('/', validators(UserSchema.user, 'body'), async (req, res) => {
 });
 
 router.put('/:id', validators(UserSchema.userId, 'params'), validators(UserSchema.user, 'body'), async (req, res) => {
-  const user = await UserService.update(Number(req.params.id), req.body);
+  const user = await UserService.update(req.params.id, req.body);
   user ? res.send(user) : res.status(404).send({ message: 'User not found!' });
 });
 
 router.delete('/:id', validators(UserSchema.userId, 'params'), async (req, res) => {
-  const user = await UserService.delete(Number(req.params.id));
+  const user = await UserService.delete(req.params.id);
 
   user ? res.send({ messge: 'User has been deleted' }) : res.status(404).send({ message: 'User not found!' });
 });

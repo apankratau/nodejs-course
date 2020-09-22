@@ -8,7 +8,7 @@ const schema = {
     age: Joi.number().integer().min(MIN_AGE).max(MAX_AGE).required(),
   }),
   userId: Joi.object({
-    id: Joi.number().integer(),
+    id: Joi.string().uuid(),
   }),
   usersAutoSuggest: Joi.object({
     login: Joi.required(),

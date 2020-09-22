@@ -1,3 +1,4 @@
 import UserSchema from './user';
+import GroupSchema from './group';
 
-export { UserSchema };
+export { UserSchema, GroupSchema };
