@@ -1,13 +1,13 @@
 import { Op } from 'sequelize';
-import User from '../models/User';
+import { User } from '../models/User';
 
 export default class UserService {
   static getAll(): Promise<User[]> {
-    return User.findAll();
+    return User.scope('withGroups').findAll();
   }
 
   static getAutosuggested(loginSubstring: string, limit: number): Promise<User[]> {
-    return User.findAll({
+    return User.scope('withGroups').findAll({
       where: {
         login: {
           [Op.substring]: loginSubstring,
@@ -17,8 +17,8 @@ export default class UserService {
     });
   }
 
-  static getById(id: number): Promise<User | null> {
-    return User.findByPk(id);
+  static getById(id: string): Promise<User | null> {
+    return User.scope('withGroups').findByPk(id);
   }
 
   static create({ login, password, age }: User): Promise<User> {
@@ -29,7 +29,7 @@ export default class UserService {
     });
   }
 
-  static async update(id: number, { login, password, age }: User): Promise<[User, boolean | null] | null> {
+  static async update(id: string, { login, password, age }: User): Promise<[User, boolean | null] | null> {
     const user = await UserService.getById(id);
 
     if (!user) {
@@ -47,7 +47,16 @@ export default class UserService {
     );
   }
 
-  static delete(id: number): Promise<number> {
+  static async delete(id: string): Promise<number | null> {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return null;
+    }
+
+    const groups = await user.getGroups();
+    await user.removeGroups(groups);
+
     return User.destroy({
       where: {
         id,
