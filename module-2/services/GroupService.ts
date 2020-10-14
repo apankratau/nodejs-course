@@ -2,16 +2,24 @@ import { Group } from '../models/Group';
 import { User } from '../models/User';
 import { UserGroup } from '../models/UserGroup';
 import db from '../DAL';
+import measure from '../decorators/measure';
+import logErrors from '../decorators/logErrors';
 
 export default class GroupService {
+  @measure
+  @logErrors
   static getAll(): Promise<Group[]> {
     return Group.scope('withUsers').findAll();
   }
 
+  @measure
+  @logErrors
   static getById(id: string): Promise<Group | null> {
     return Group.scope('withUsers').findByPk(id);
   }
 
+  @measure
+  @logErrors
   static create({ name, permissions }: Group): Promise<Group> {
     return Group.create({
       name,
@@ -19,6 +27,8 @@ export default class GroupService {
     });
   }
 
+  @measure
+  @logErrors
   static async update(id: string, { name, permissions }: Group): Promise<[Group, boolean | null] | null> {
     const group = await GroupService.getById(id);
 
@@ -36,6 +46,8 @@ export default class GroupService {
     );
   }
 
+  @measure
+  @logErrors
   static async delete(id: string): Promise<number | null> {
     const group = await Group.findByPk(id);
 
@@ -53,6 +65,8 @@ export default class GroupService {
     });
   }
 
+  @measure
+  @logErrors
   static addUsersToGroup(groupId: string, userIds: string[]): Promise<UserGroup[] | null> {
     return db.sequelize.transaction(async t => {
       const group = await Group.findByPk(groupId, { transaction: t });

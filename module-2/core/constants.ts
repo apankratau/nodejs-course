@@ -1,5 +1,7 @@
 export const PORT = 4000;
 
+export const ON_ERROR_EXIT_CODE = 1;
+
 export const MIN_LENGTH = 3;
 export const MAX_LENGTH = 20;
 export const MIN_AGE = 4;
