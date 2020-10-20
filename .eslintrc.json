@@ -92,6 +92,7 @@
 		"prefer-destructuring": "error", // require destructuring from arrays and/or objects
 		"rest-spread-spacing": ["error", "never"], // enforce spacing between rest and spread operators and their expressions
 		"template-curly-spacing": "error", // require or disallow spacing around embedded expressions of template strings
+		"no-unsafe-finally": "off", // allow control flow in `finally` block https://eslint.org/docs/rules/no-unsafe-finally
 
 		"promise/prefer-await-to-then": "error", // refer await to then() for reading Promise values,
 

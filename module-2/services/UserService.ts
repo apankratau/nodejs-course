@@ -1,11 +1,17 @@
 import { Op } from 'sequelize';
 import { User } from '../models/User';
+import measure from '../decorators/measure';
+import logErrors from '../decorators/logErrors';
 
 export default class UserService {
+  @measure
+  @logErrors
   static getAll(): Promise<User[]> {
     return User.scope('withGroups').findAll();
   }
 
+  @measure
+  @logErrors
   static getAutosuggested(loginSubstring: string, limit: number): Promise<User[]> {
     return User.scope('withGroups').findAll({
       where: {
@@ -17,10 +23,14 @@ export default class UserService {
     });
   }
 
+  @measure
+  @logErrors
   static getById(id: string): Promise<User | null> {
     return User.scope('withGroups').findByPk(id);
   }
 
+  @measure
+  @logErrors
   static create({ login, password, age }: User): Promise<User> {
     return User.create({
       login,
@@ -29,6 +39,8 @@ export default class UserService {
     });
   }
 
+  @measure
+  @logErrors
   static async update(id: string, { login, password, age }: User): Promise<[User, boolean | null] | null> {
     const user = await UserService.getById(id);
 
@@ -47,6 +59,8 @@ export default class UserService {
     );
   }
 
+  @measure
+  @logErrors
   static async delete(id: string): Promise<number | null> {
     const user = await User.findByPk(id);
 

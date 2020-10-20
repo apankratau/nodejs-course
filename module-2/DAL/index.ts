@@ -4,6 +4,7 @@ import rawConfig from '../core/config/database.json';
 import { initUser, associateUser, addScopes as addUserScopes } from '../models/User';
 import { initGroup, associateGroup, addScopes as addGroupScopes } from '../models/Group';
 import { initUserGroup } from '../models/UserGroup';
+import logger from '../core/logger';
 
 const env = (process.env.NODE_ENV || 'development') as Envs;
 const config = rawConfig as DbConfig;
@@ -11,7 +12,7 @@ const envConfig = config[env];
 
 const sequelize = new Sequelize(envConfig.database, envConfig.username, envConfig.password, {
   ...envConfig,
-  logging: (...msg) => console.log(msg),
+  logging: sql => logger.verbose(`\x1b[36m[sequelize]\x1b[0m ${sql}`),
 });
 
 initUser(sequelize);
