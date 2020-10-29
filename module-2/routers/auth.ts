@@ -1,4 +1,5 @@
 import express from 'express';
+import { compareSync } from 'bcrypt';
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
 import validators from '../middlewares/validators';
@@ -16,9 +17,9 @@ router.post(
     const { username, password }: LoginAttributes = req.body;
     const users = await UserService.getAll();
 
-    const user = users.find(u => username === u.get('login') && password === u.get('password'));
+    const user = users.find(u => username === u.get('login') && compareSync(password, u.get('password')));
 
-    user ? res.send(await AuthService.createTokenPair(username)) : res.status(404).send({ message: 'User not found!' });
+    user ? res.send(await AuthService.createTokenPair(user)) : res.status(404).send({ message: 'User not found!' });
   }),
 );
 
@@ -28,22 +29,23 @@ router.post(
   asyncCatch(async (req, res) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { token } = req.body;
+    const accessToken = await AuthService.createAccessToken(token);
 
-    if (AuthService.refreshTokens.includes(token) && AuthService.isRefreshTokenValid(token)) {
-      res.send(await AuthService.createAccessToken(token));
-    } else {
-      res.status(403).send({ message: 'Provided token is expired' });
-    }
+    accessToken ? res.send(accessToken) : res.status(403).send({ message: 'Provided token is expired' });
   }),
 );
 
-router.post('/logout', validators(AuthSchema.token, 'body'), (req, res) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { token } = req.body;
+router.post(
+  '/logout',
+  validators(AuthSchema.token, 'body'),
+  asyncCatch(async (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { token } = req.body;
 
-  AuthService.invalidateRefreshToken(token);
+    await AuthService.logout(token);
 
-  res.send({ message: 'Logout successful' });
-});
+    res.send({ message: 'Logout successful' });
+  }),
+);
 
 export default router;

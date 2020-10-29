@@ -7,17 +7,29 @@ import {
   BelongsToManyHasAssociationMixin,
   BelongsToManyCountAssociationsMixin,
   BelongsToManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
   Association,
   Sequelize,
 } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import { MAX_LOGIN_LENGTH } from '../core/constants';
+import { hashSync } from 'bcrypt';
+import { MAX_LOGIN_LENGTH, DEFAULT_SALT_ROUNDS } from '../core/constants';
 import { UserAttributes, UserCreationAttributes } from '../core/types/user';
 import { Group } from './Group';
+import { AuthToken } from './AuthToken';
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public static associations: {
     groups: Association<User, Group>;
+    tokens: Association<User, AuthToken>;
   };
 
   public id!: string;
@@ -35,7 +47,18 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public countGroups!: BelongsToManyCountAssociationsMixin;
   public createGroup!: BelongsToManyCreateAssociationMixin<Group>;
 
+  public getTokens!: HasManyGetAssociationsMixin<AuthToken>;
+  public removeAuthToken!: HasManyRemoveAssociationMixin<AuthToken, string>;
+  public removeAuthTokens!: HasManyRemoveAssociationsMixin<AuthToken, string>;
+  public addAuthToken!: HasManyAddAssociationMixin<AuthToken, string>;
+  public addAuthTokens!: HasManyAddAssociationsMixin<AuthToken, string>;
+  public hasAuthToken!: HasManyHasAssociationMixin<AuthToken, string>;
+  public hasAuthTokens!: HasManyHasAssociationsMixin<AuthToken, string>;
+  public countAuthTokens!: HasManyCountAssociationsMixin;
+  public createAuthToken!: HasManyCreateAssociationMixin<AuthToken>;
+
   public readonly groups?: Group[];
+  public readonly tokens?: AuthToken[];
 }
 
 export function initUser(sequelize: Sequelize): void {
@@ -53,6 +76,9 @@ export function initUser(sequelize: Sequelize): void {
       password: {
         type: new DataTypes.STRING(MAX_LOGIN_LENGTH),
         allowNull: false,
+        set(value) {
+          this.setDataValue('password', hashSync(value, DEFAULT_SALT_ROUNDS));
+        },
       },
       age: {
         type: DataTypes.INTEGER,
@@ -73,6 +99,7 @@ export function initUser(sequelize: Sequelize): void {
 
 export function associateUser(): void {
   User.belongsToMany(Group, { through: 'UserGroup', as: 'groups' });
+  User.hasMany(AuthToken, { as: 'tokens' });
 }
 
 export function addScopes(sequelize: Sequelize): void {
@@ -85,6 +112,16 @@ export function addScopes(sequelize: Sequelize): void {
         through: {
           attributes: [],
         },
+      },
+    ],
+  });
+
+  User.addScope('withTokens', {
+    include: [
+      {
+        model: sequelize.models.AuthToken,
+        as: 'tokens',
+        attributes: ['id', 'token'],
       },
     ],
   });

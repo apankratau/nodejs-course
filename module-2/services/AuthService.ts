@@ -1,5 +1,7 @@
-import { sign, verify } from 'jsonwebtoken';
+import { sign, verify, decode } from 'jsonwebtoken';
 import { TokenPair } from '../core/types/auth';
+import { AuthToken } from '../models/AuthToken';
+import { User } from '../models/User';
 import measure from '../decorators/measure';
 import logErrors from '../decorators/logErrors';
 
@@ -21,8 +23,12 @@ export default class AuthService {
     return true;
   }
 
-  static isAccessTokenValid(token: string): boolean {
-    return this.isTokenValid(accessTokenSecret, token);
+  static async isAccessTokenValid(token: string): Promise<boolean> {
+    const authToken = await AuthToken.findOne({
+      where: { token },
+    });
+
+    return this.isTokenValid(accessTokenSecret, String(authToken?.get('token')));
   }
 
   static isRefreshTokenValid(token: string): boolean {
@@ -35,23 +41,40 @@ export default class AuthService {
 
   @measure
   @logErrors
-  static createTokenPair(username: string): Promise<TokenPair> {
-    const accessToken = sign({ username }, accessTokenSecret, { expiresIn: accessTokenLife });
-    const refreshToken = sign({ username }, refreshTokenSecret, { expiresIn: refreshTokenLife });
+  static async createTokenPair({ id, login }: User): Promise<TokenPair> {
+    const accessToken = sign({ id, login }, accessTokenSecret, { expiresIn: accessTokenLife });
+    const refreshToken = sign({ id, login }, refreshTokenSecret, { expiresIn: refreshTokenLife });
 
     this.refreshTokens.push(refreshToken);
+    await AuthToken.create({ token: accessToken, UserId: id });
 
     return Promise.resolve({ accessToken, refreshToken });
   }
 
   @measure
   @logErrors
-  static createAccessToken(token: string): Promise<Partial<TokenPair>> {
-    const { username } = <{ username: string }>verify(token, refreshTokenSecret);
+  static async createAccessToken(token: string): Promise<Partial<TokenPair> | null> {
+    if (!(this.refreshTokens.includes(token) && this.isRefreshTokenValid(token))) {
+      return Promise.resolve(null);
+    }
+
+    const { id, login } = <{ id: string; login: string }>verify(token, refreshTokenSecret);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const accessToken = sign({ username }, accessTokenSecret, { expiresIn: accessTokenLife });
+    const accessToken = sign({ id, login }, accessTokenSecret, { expiresIn: accessTokenLife });
+    await AuthToken.create({ token: accessToken, UserId: id });
 
     return Promise.resolve({ accessToken });
+  }
+
+  @measure
+  @logErrors
+  static async logout(token: string): Promise<void> {
+    this.invalidateRefreshToken(token);
+
+    const { id } = <{ id: string }>decode(token);
+    await AuthToken.destroy({
+      where: { UserId: id },
+    });
   }
 }

@@ -4,6 +4,7 @@ import rawConfig from '../core/config/database.json';
 import { initUser, associateUser, addScopes as addUserScopes } from '../models/User';
 import { initGroup, associateGroup, addScopes as addGroupScopes } from '../models/Group';
 import { initUserGroup } from '../models/UserGroup';
+import { initAuthToken, associateAuthToken } from '../models/AuthToken';
 import logger from '../core/logger';
 
 const env = (process.env.NODE_ENV || 'development') as Envs;
@@ -18,9 +19,11 @@ const sequelize = new Sequelize(envConfig.database, envConfig.username, envConfi
 initUser(sequelize);
 initGroup(sequelize);
 initUserGroup(sequelize);
+initAuthToken(sequelize);
 
 associateUser();
 associateGroup();
+associateAuthToken();
 
 addUserScopes(sequelize);
 addGroupScopes(sequelize);
@@ -31,6 +34,7 @@ const db = {
   User: sequelize.models.User,
   Group: sequelize.models.Group,
   UserGroup: sequelize.models.UserGroup,
+  AuthToken: sequelize.models.AuthToken,
 };
 
 export default db;
