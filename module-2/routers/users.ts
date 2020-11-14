@@ -1,11 +1,14 @@
 import express from 'express';
 import UserService from '../services/UserService';
 import validators from '../middlewares/validators';
+import checkJwt from '../middlewares/check-jwt';
 import { UserSchema } from '../schema';
 import { DEFAULT_LIMIT } from '../core/constants';
 import asyncCatch from '../core/utils/asyncCatch';
 
 const router = express.Router();
+
+router.use(checkJwt);
 
 router.get(
   '/',

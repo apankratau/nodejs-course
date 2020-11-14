@@ -11,3 +11,5 @@ export const MIN_LIMIT = 1;
 export const DEFAULT_LIMIT = 3;
 
 export const MAX_LOGIN_LENGTH = 128;
+
+export const DEFAULT_SALT_ROUNDS = 10;

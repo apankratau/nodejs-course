@@ -1,10 +1,13 @@
 import express from 'express';
 import GroupService from '../services/GroupService';
 import validators from '../middlewares/validators';
+import checkJwt from '../middlewares/check-jwt';
 import { GroupSchema } from '../schema';
 import asyncCatch from '../core/utils/asyncCatch';
 
 const router = express.Router();
+
+router.use(checkJwt);
 
 router.get(
   '/',

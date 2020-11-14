@@ -105,7 +105,7 @@
 				"ignoreEnums": true,
 				"enforceConst": true,
 				"ignoreReadonlyClassProperties": true,
-				"ignore": [0, 24, 60, 1000, 200, 400, 404, 500]
+				"ignore": [0, 24, 60, 1000, 200, 400, 401, 403, 404, 500]
 			}
 		], // Disallows magic numbers
 		"@typescript-eslint/brace-style": ["error", "1tbs"], // Enforce consistent brace style for blocks
