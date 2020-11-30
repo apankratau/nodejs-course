@@ -74,5 +74,5 @@
     "experimentalDecorators": true,
   },
   "include": ["module-2/**/*"],
-  "exclude": ["node_modules", "module-1/**/*", "dist", "module-2/**/*.js"]
+  "exclude": ["node_modules", "module-1/**/*", "dist", "module-2/**/*.js", "jest.config.js", "__mocks__"]
 }

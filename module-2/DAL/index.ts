@@ -1,18 +1,19 @@
-import { Sequelize } from 'sequelize';
-import { DbConfig, Envs } from '../core/types/config';
-import rawConfig from '../core/config/database.json';
+import { Sequelize, Dialect } from 'sequelize';
 import { initUser, associateUser, addScopes as addUserScopes } from '../models/User';
 import { initGroup, associateGroup, addScopes as addGroupScopes } from '../models/Group';
 import { initUserGroup } from '../models/UserGroup';
 import { initAuthToken, associateAuthToken } from '../models/AuthToken';
 import logger from '../core/logger';
 
-const env = (process.env.NODE_ENV || 'development') as Envs;
-const config = rawConfig as DbConfig;
-const envConfig = config[env];
+const dbName = String(process.env.DB_NAME);
+const dbUsername = String(process.env.DB_USERNAME);
+const dbPassword = String(process.env.DB_PASSWORD);
+const dbHost = String(process.env.DB_HOST);
+const dbDialect = String(process.env.DB_DIALECT);
 
-const sequelize = new Sequelize(envConfig.database, envConfig.username, envConfig.password, {
-  ...envConfig,
+const sequelize = new Sequelize(dbName, dbUsername, dbPassword, {
+  host: dbHost,
+  dialect: dbDialect as Dialect,
   logging: sql => logger.verbose(`\x1b[36m[sequelize]\x1b[0m ${sql}`),
 });
 
